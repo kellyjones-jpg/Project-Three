@@ -1,5 +1,5 @@
 import React from "react";
-import { dateFns } from "date-fns";
+import* as dateFns from 'date-fns';
 
 class Calendar extends React.Component {
     state = {
@@ -8,7 +8,7 @@ class Calendar extends React.Component {
     };
 
     renderHeader() {
-        const dateFormat = "MMMM YYYY";
+        const dateFormat = "MMMM yyyy";
 
         return (
             <div className="header row flex-middle">
@@ -46,11 +46,11 @@ class Calendar extends React.Component {
     renderCells() {
         const { currentMonth, selectedDate } = this.state;
         const monthStart = dateFns.startOfMonth(currentMonth);
-        const monthEnd = dateFns.endofMonth(monthStart);
+        const monthEnd = dateFns.endOfMonth(monthStart);
         const startDate = dateFns.startOfWeek(monthStart);
         const endDate = dateFns.endOfWeek(monthEnd);
 
-        const dateFormat = "D";
+        const dateFormat = "d";
         const rows = [];
 
         let days = [];
@@ -71,16 +71,39 @@ class Calendar extends React.Component {
                     onClick={() => this.onDateClick(dateFns.parse(cloneDay))}
                     >
                         <span className="number">{formattedDate}</span>
-                        <span className="bg"
-
+                        <span className="bg">{ formattedDate }</span>
                     </div>
-                )
+                );
+                day = dateFns.addDays(day, 1);
             }
+            rows.push(
+                <div className="row" key={day}>
+                    {days}
+                </div>
+            );
+            days = [];
         }
+        return <div className="body">{rows}</div>;
     }
-    onDateClick = day => {};
-    nextMonth = () => {};
-    prevMonth = () => {};
+
+    onDateClick = day => {
+        this.setState({
+            selectedDate: day
+        });
+    };
+
+
+    nextMonth = () => {
+        this.setState({
+            currentMonth: dateFns.addMonths(this.state.currentMonth, 1)
+        });
+    };
+
+    prevMonth = () => {
+        this.setState({
+            currentMonth: dateFns.subMonths(this.state.currentMonth, 1)
+        });
+    };
 
 
     render() {
