@@ -1,11 +1,32 @@
 import React from "react";
-import* as dateFns from 'date-fns';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+
+import * as dateFns from 'date-fns';
+import format from 'date-fns/format';
 
 class Calendar extends React.Component {
     state = {
         currentMonth: new Date(),
-        selectedDate: new Date()
+        selectedDate: new Date(),
+        dayModal: "",
+        modal: false
     };
+    ////
+
+    toggle = day => {
+
+        this.setState({
+            modal: !this.state.modal,
+            selectedDate: day,
+            dayModal: format(day, "yyyy-MM-dd")
+        });
+    }
+
+    //
+    // the SAVE (sustituion of do something button) from the modal click need to call the db and save the info
+
+    //
+    ////
 
     renderHeader() {
         const dateFormat = "MMMM yyyy";
@@ -17,22 +38,22 @@ class Calendar extends React.Component {
                         chevron_left
                     </div>
                 </div>
-            <div className="col col-center">
-                <span>{dateFns.format(this.state.currentMonth, dateFormat)}</span>
-            </div>
-            <div className="col col-end" onClick={this.nextMonth}>
-                <div className="icon">chevron_right</div>
-            </div>
+                <div className="col col-center">
+                    <span>{dateFns.format(this.state.currentMonth, dateFormat)}</span>
+                </div>
+                <div className="col col-end" onClick={this.nextMonth}>
+                    <div className="icon">chevron_right</div>
+                </div>
             </div>
         );
     }
     renderDays() {
-        const dateFormat = "dddd";
+        const dateFormat = "iiii";
         const days = [];
 
         let startDate = dateFns.startOfWeek(this.state.currentMonth);
 
-        for(let i = 0; i < 7; i++) {
+        for (let i = 0; i < 7; i++) {
             days.push(
                 <div className="col col-center" key={i}>
                     {dateFns.format(dateFns.addDays(startDate, i), dateFormat)}
@@ -56,22 +77,24 @@ class Calendar extends React.Component {
         let days = [];
         let day = startDate;
         let formattedDate = "";
-        
+
         while (day <= endDate) {
-            for (let i = 0; i <7; i++) {
+            for (let i = 0; i < 7; i++) {
                 formattedDate = dateFns.format(day, dateFormat);
                 const cloneDay = day;
+
                 days.push(
                     <div className={`col cell ${
                         !dateFns.isSameMonth(day, monthStart)
-                        ? "disabled"
-                        : dateFns.isSameDay(day, selectedDate) ? "selected" : ""
-                    }`}
-                    key ={day}
-                    onClick={() => this.onDateClick(dateFns.parse(cloneDay))}
+                            ? "disabled"
+                            : dateFns.isSameDay(day, selectedDate) ? "selected" : ""
+                        }`}
+                        key={day}
+                        onClick={() => this.onDateClick(cloneDay)}
+                    // onClick={() => this.onDateClick(dateFns.parse(cloneDay))}
                     >
                         <span className="number">{formattedDate}</span>
-                        <span className="bg">{ formattedDate }</span>
+                        <span className="bg">{formattedDate}</span>
                     </div>
                 );
                 day = dateFns.addDays(day, 1);
@@ -87,9 +110,13 @@ class Calendar extends React.Component {
     }
 
     onDateClick = day => {
-        this.setState({
-            selectedDate: day
-        });
+        console.log("clicked", day);
+        this.toggle(day)
+        // setModal(ModalDay)
+        // open the modal
+        // this.setState({
+        //     selectedDate: day
+        // });
     };
 
 
@@ -106,12 +133,28 @@ class Calendar extends React.Component {
     };
 
 
+
     render() {
         return (
-            <div className="calendar">
-                {this.renderHeader()}
-                {this.renderDays()}
-                {this.renderCells()}
+            <div>
+                <div className="calendar">
+                    {this.renderHeader()}
+                    {this.renderDays()}
+                    {this.renderCells()}
+                </div>
+
+                <div>
+                    <Modal isOpen={this.state.modal} toggle={() => {this.toggle(this.state.selectedDate)}} className={this.props.className}>
+                        <ModalHeader toggle={() => {this.toggle(this.state.selectedDate)}}>{this.state.dayModal}</ModalHeader>
+                        <ModalBody>
+                            Form to go here.
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button color="primary" onClick={() => {this.toggle(this.state.selectedDate)}}>Save</Button>{' '}
+                            <Button color="secondary" onClick={() => {this.toggle(this.state.selectedDate)}}>Delete</Button>
+                        </ModalFooter>
+                    </Modal>
+                </div>
             </div>
 
         );
