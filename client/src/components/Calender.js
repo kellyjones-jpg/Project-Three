@@ -1,15 +1,20 @@
 import React from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-
+import { Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import * as dateFns from 'date-fns';
 import format from 'date-fns/format';
+import CalendarDetail from './Form.js'
 
 class Calendar extends React.Component {
     state = {
         currentMonth: new Date(),
         selectedDate: new Date(),
         dayModal: "",
-        modal: false
+        modal: false,
+        title: "",
+        timeStart: "",
+        timeEnd: "",
+        appointmentDetails: ""
     };
     ////
 
@@ -18,7 +23,7 @@ class Calendar extends React.Component {
         this.setState({
             modal: !this.state.modal,
             selectedDate: day,
-            dayModal: format(day, "yyyy-MM-dd")
+            dayModal: format(day, "MMMM do, yyy")
         });
     }
 
@@ -27,6 +32,26 @@ class Calendar extends React.Component {
 
     //
     ////
+
+    // handleInput
+    handleChange = event => {
+        console.log(event.target)
+        let name = event.target.name
+        let value = event.target.value
+        console.log(name, value)
+        this.setState({
+            [name]: value
+        })
+
+    }
+    // handleSubmit
+    handleSave = event => {
+        event.preventDefault()
+        console.log(this.state)
+
+        // call update db and when back update state cleaning the info
+        this.setState({ modal: !this.state.modal, title: "", timeStart: "", timeEnd: "", appointmentDetails: "" })
+    }
 
     renderHeader() {
         const dateFormat = "MMMM yyyy";
@@ -144,14 +169,21 @@ class Calendar extends React.Component {
                 </div>
 
                 <div>
-                    <Modal isOpen={this.state.modal} toggle={() => {this.toggle(this.state.selectedDate)}} className={this.props.className}>
-                        <ModalHeader toggle={() => {this.toggle(this.state.selectedDate)}}>{this.state.dayModal}</ModalHeader>
+                    <Modal isOpen={this.state.modal} toggle={() => { this.toggle(this.state.selectedDate) }} className={this.props.className}>
+                        <ModalHeader toggle={() => { this.toggle(this.state.selectedDate) }}>{this.state.dayModal}</ModalHeader>
                         <ModalBody>
-                            Form to go here.
+                            <CalendarDetail
+                                title={this.state.title}
+                                start={this.state.timeStart}
+                                end={this.state.timeEnd}
+                                detail={this.state.appointmentDetails}
+                                handleChange={this.handleChange}
+
+                            />
                         </ModalBody>
                         <ModalFooter>
-                            <Button color="primary" onClick={() => {this.toggle(this.state.selectedDate)}}>Save</Button>{' '}
-                            <Button color="secondary" onClick={() => {this.toggle(this.state.selectedDate)}}>Delete</Button>
+                            <Button color="primary" onClick={this.handleSave}>Save</Button>{' '}
+                            <Button color="secondary" onClick={() => { this.toggle(this.state.selectedDate) }}>Delete</Button>
                         </ModalFooter>
                     </Modal>
                 </div>
