@@ -15,6 +15,7 @@ class App extends React.Component {
               <span>
                 Pet<b>Quest</b>
               </span>
+
             </div>
           </header>
         </div>
