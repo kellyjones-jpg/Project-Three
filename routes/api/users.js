@@ -110,6 +110,7 @@ router.post(
   '/auth/openid',
   (req, res) => {
     console.log(req.url);
+    console.log("coaksflaksfas")
     passport.authenticate('openid')
     res.json("cool dude")
   });
