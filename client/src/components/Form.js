@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import { Form, FormGroup, Label, Input } from 'reactstrap';
 
 const CalendarDetail = (props) => {
     console.log(props)
@@ -49,8 +49,6 @@ const CalendarDetail = (props) => {
                     onChange={props.handleChange}
                 />
             </FormGroup>
-
-
         </Form>
     );
 }
