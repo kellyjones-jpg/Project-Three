@@ -10,7 +10,7 @@ class App extends React.Component {
             <div id ="logo">
               <span className="icon">date_range</span>
             <span>
-              react<b>calendar</b>
+              Pet<b>Tracker(tbd)</b>
             </span>
             </div>
         </header>
