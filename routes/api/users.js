@@ -106,4 +106,17 @@ router.post("/login", (req, res) => {
   });
 });
 
+router.post(
+  '/auth/openid',
+  (req, res) => {
+    console.log(req.url);
+    passport.authenticate('openid')
+    res.json("cool dude")
+  });
+
+router.get('/auth/openid/return',
+  passport.authenticate('openid', { successRedirect: '/',
+                                    failureRedirect: '/login' }));
+
+
 module.exports = router;
