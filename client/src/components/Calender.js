@@ -5,41 +5,67 @@ import format from 'date-fns/format';
 import CalendarDetail from './Form.js';
 import SavedEvent from './Event.js'
 
+const fakeApp = {
+
+    20200305: [
+        {
+            title: "Grooming",
+            timeStart: "1300",
+            timeEnd: "2:00pm",
+            appointmentDetails: "In Aurora"
+        },
+        {
+            title: "Vet",
+            timeStart: "3:00pm",
+            timeEnd: "4:00pm",
+            appointmentDetails: "In Aurora"
+        }
+    ]
+
+}
+
 class Calendar extends React.Component {
     state = {
         currentMonth: new Date(),
         selectedDate: new Date(),
+        selectedId: 0,
         dayModal: "",
         modal: false,
         title: "",
         timeStart: "",
         timeEnd: "",
         appointmentDetails: "",
-        temp: {
-            20200305: [
-                {
-                    title: "Grooming",
-                    timeStart: "1300",
-                    timeEnd: "2:00pm",
-                    appointmentDetails: "In Aurora"
-                },
-                {
-                    title: "Vet",
-                    timeStart: "3:00pm",
-                    timeEnd: "4:00pm",
-                    appointmentDetails: "In Aurora"
-                }
-            ]
-        }
+        temp: {}
     };
 
+
+    componentDidMount() {
+        this.renderAppointments()
+    }
+
+    renderAppointments = () => {
+
+        // call the db get all the appointmentes and when back update the state
+
+        this.setState({ temp: fakeApp })
+
+    }
     //changes the view of the modal
     toggle = day => {
         this.setState({
             modal: !this.state.modal,
             selectedDate: day,
-            dayModal: format(day, "MMMM do, yyy")
+            dayModal: format(day, "MMMM do, yyy"),
+            title: "", timeStart: "", timeEnd: "", appointmentDetails: "" 
         });
+    }
+    //changes the view of the modal
+    handleClickApp = e => {
+        /// call the db and pass the info for the id then update the state
+        e.stopPropagation();
+        console.log(e)
+        let id=1
+        this.setState({ modal: !this.state.modal, selectedId: id, title: "xxxx", timeStart: "08:00", timeEnd: "09:00", appointmentDetails: "testing" });
     }
 
     // handleChange - runs on every keystroke in the form to update the React state, the displayed value will update as the user types
@@ -57,19 +83,31 @@ class Calendar extends React.Component {
     // handleSubmit
     handleSave = event => {
         event.preventDefault()
+        console.log("handlesave")
         console.log(this.state)
+        let dayTemp = format(this.state.selectedDate, 'yyyyMMdd')
+        let newAppointment = {
+            day: dayTemp,
+            title: this.state.title,
+            timeStart: this.state.timeStart,
+            timeEnd: this.state.timeEnd,
+            appointmentDetails: this.state.appointmentDetails
+        }
+        // API call to create db pass the object newAppointment then when back you update state
         // update db
         // db.create(newEvent).then(res => this.setState.events(res))
         // on response, update state
+
+        console.log("selected day:", dayTemp)
         this.setState({
             temp: {
-                ...this.state.temp,
-                20200309: [
+                ...this.state.temp, 
+                [dayTemp]: [
                     {
-                        title: "Pick up",
-                        timeStart: "1:00pm",
-                        timeEnd: "2:00pm",
-                        appointmentDetails: "In Aurora"
+                        title: this.state.title,
+                        timeStart: this.state.timeStart,
+                        timeEnd: this.state.timeEnd,
+                        appointmentDetails: this.state.appointmentDetails
                     }
                 ]
             }
@@ -147,10 +185,12 @@ class Calendar extends React.Component {
 
 
                         {this.state.temp[format(day, 'yyyyMMdd')] &&
-                        //  console.log(format(day, 'yyyyMMdd'))
-                            this.state.temp[format(day, 'yyyyMMdd')].map(appt => 
+                            //  console.log(format(day, 'yyyyMMdd'))
+                            this.state.temp[format(day, 'yyyyMMdd')].map(appt =>
                                 <SavedEvent
                                     title={appt.title}
+                                    id={"1"}
+                                    handleClickApp={this.handleClickApp}
                                 />
                             )
                         }
