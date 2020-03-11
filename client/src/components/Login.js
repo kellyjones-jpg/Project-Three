@@ -10,42 +10,81 @@ class Login extends React.Component {
     // LOGIN: need input fields (name, password, email)
     // REGISTER: need input fields (..., password2)
 
-    handleSubmit = () => {
+    handleSubmit = (event) => {
+      event.preventDefault();
         console.log("button")
         // handle form submit
         // captures input values
         // sends values to api register route, as an object {name, email, pw}
         // on response, redirect to home page
-        axios.post('/api/users/auth/openid', {
-            email: "",
-            password: ""
+        axios.post('/api/users/login', {
+            email: "example@email.com",
+            password: "1234"
         }).then(function (response) {
             console.log(response)
+            // window.location.href = "/private";
         })
     }
 
     render() {
         return (
             <div className="login">
-                <Form action="/api/users/auth/openid" method="post">
-      <FormGroup row>
-        <Label for="loginEmail" sm={2}>Email</Label>
-        <Col sm={10}>
-          <Input type="email" name="email" id="loginEmail" placeholder="example@email.com" />
+              <container>
+              <FormGroup row>
+              <Col sm="12" md={{ size: 6, offset: 3 }}>
+                <div style={{paddingTop: "5%"}}>Register</div>
+                </Col>
+                </FormGroup>
+                <Form action="/api/users/register" method="post">
+                <FormGroup row>
+        <Col sm="12" md={{ size: 6, offset: 3 }} style={{paddingTop: ".50%"}}>
+          <Input type="name" name="name" id="name" placeholder="Name" />
         </Col>
       </FormGroup>
       <FormGroup row>
-        <Label for="loginPassword" sm={2}>Password</Label>
-        <Col sm={10}>
-          <Input type="password" name="password" id="loginPassword" placeholder="password" />
+        <Col sm="12" md={{ size: 6, offset: 3 }}>
+          <Input type="email" name="email" id="email" placeholder="Email" />
+        </Col>
+      </FormGroup>
+      <FormGroup row>
+        <Col sm="12" md={{ size: 6, offset: 3 }}>
+          <Input type="password" name="password" id="password" placeholder="Password" />
+        </Col>
+      </FormGroup>
+      <FormGroup row>
+        <Col sm="12" md={{ size: 6, offset: 3 }}>
+          <Input type="password2" name="password2" id="password2" placeholder="Re-enter Password" />
         </Col>
       </FormGroup>
       <FormGroup check row>
-        <Col sm={{ size: 10, offset: 2 }}>
-          <Button onClick={() => this.handleSubmit()} type="submit">Submit</Button>
+        <Col sm="12" md={{ size: 6, offset: 3 }} style={{paddingTop: ".50%"}}>
+          <Button type="submit">Submit</Button>
         </Col>
       </FormGroup>
     </Form>
+    <FormGroup row>
+    <Col sm="12" md={{ size: 6, offset: 3 }}>
+                <div style={{paddingTop: "5%"}}>Login</div>
+                </Col>
+                </FormGroup>
+                <Form action="/api/users/login" method="post">
+      <FormGroup row style={{paddingTop: ".50%"}}>
+        <Col sm="12" md={{ size: 6, offset: 3 }}>
+          <Input type="email" name="email" id="email" placeholder="Email" />
+        </Col>
+      </FormGroup>
+      <FormGroup row>
+        <Col sm="12" md={{ size: 6, offset: 3 }}>
+          <Input type="password" name="password" id="password" placeholder="Password" />
+        </Col>
+      </FormGroup>
+      <FormGroup check row>
+        <Col sm="12" md={{ size: 6, offset: 3 }} style={{paddingTop: ".50%"}}>
+          <Button type="submit">Submit</Button>
+        </Col>
+      </FormGroup>
+    </Form>
+    </container>
             </div>
         );
     }

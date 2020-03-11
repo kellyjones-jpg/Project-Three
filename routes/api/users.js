@@ -42,7 +42,8 @@ router.post("/register", (req, res) => {
           newUser.password = hash;
           newUser
             .save()
-            .then(user => res.json(user))
+            // .then(user => res.json(user))
+            .then(user => res.redirect("/success"))
             .catch(err => console.log(err));
         });
       });
@@ -91,10 +92,11 @@ router.post("/login", (req, res) => {
             expiresIn: 31556926 // 1 year in seconds
           },
           (err, token) => {
-            res.json({
-              success: true,
-              token: "Bearer " + token
-            });
+            // res.json({
+            //   success: true,
+            //   token: "Bearer " + token
+            // });
+            res.redirect("/private");
           }
         );
       } else {
@@ -110,14 +112,15 @@ router.post(
   '/auth/openid',
   (req, res) => {
     console.log(req.url);
-    console.log("coaksflaksfas")
     passport.authenticate('openid')
-    res.json("cool dude")
+    res.json("sign in complete")
   });
 
 router.get('/auth/openid/return',
-  passport.authenticate('openid', { successRedirect: '/',
+  passport.authenticate('openid', {
                                     failureRedirect: '/login' }));
 
 
 module.exports = router;
+
+// successRedirect: '',

@@ -3,6 +3,7 @@ import "./App.css";
 import Calendar from "./components/Calender";
 import Login from "./components/Login";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import Success from "./components/Success";
 
 class App extends React.Component {
   render() {
@@ -22,6 +23,9 @@ class App extends React.Component {
         <Switch>
           <Route exact path="/">
               <Login />
+          </Route>
+          <Route exact path="/success">
+              <Success />
           </Route>
           <Route exact path="/private">
               <Calendar />
