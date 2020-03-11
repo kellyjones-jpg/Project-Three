@@ -1,9 +1,10 @@
-const db = require("../models");
+const db = require("../models/events");
 const mongoose = require('mongoose');
 
 module.exports = {
 
 create: function(req, res) {
+    console.log("hey cool")
     var newEvent = new db(req.body);
     newEvent.save(function (err) {
         if(err)
