@@ -6,23 +6,15 @@ const petSchema = new Schema({
         type: String,
         required: true,
     },
-    startDate:
-     {type: Date, 
-      default: Date.now
-    },
-    endDate: 
-    {type: Date,
-     default: Date.now
-    },
-    startTime: {
+    timeStart: {
      type: Number,
      required: true
     },
-    endTime: {
+    timeEnd: {
       type: Number,
       required: true
     },
-    description: {
+    appointmentDetails: {
      type: String,
      required: true
     }
