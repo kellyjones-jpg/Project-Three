@@ -1,39 +1,74 @@
 import React from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import { Form, FormGroup, Label, Input, FormText } from 'reactstrap';
 import * as dateFns from 'date-fns';
 import format from 'date-fns/format';
-import CalendarDetail from './Form.js'
+import CalendarDetail from './Form.js';
+import SavedEvent from './Event.js'
+
+const fakeApp = {
+
+    20200305: [
+        {
+            title: "Grooming",
+            timeStart: "1300",
+            timeEnd: "2:00pm",
+            appointmentDetails: "In Aurora"
+        },
+        {
+            title: "Vet",
+            timeStart: "3:00pm",
+            timeEnd: "4:00pm",
+            appointmentDetails: "In Aurora"
+        }
+    ]
+
+}
 
 class Calendar extends React.Component {
     state = {
         currentMonth: new Date(),
         selectedDate: new Date(),
+        selectedId: 0,
         dayModal: "",
         modal: false,
         title: "",
         timeStart: "",
         timeEnd: "",
-        appointmentDetails: ""
+        appointmentDetails: "",
+        temp: {}
     };
-    ////
 
+
+    componentDidMount() {
+        this.renderAppointments()
+    }
+
+    renderAppointments = () => {
+
+        // call the db get all the appointmentes and when back update the state
+
+        this.setState({ temp: fakeApp })
+
+    }
+    //changes the view of the modal
     toggle = day => {
-
         this.setState({
             modal: !this.state.modal,
             selectedDate: day,
-            dayModal: format(day, "MMMM do, yyy")
+            dayModal: format(day, "MMMM do, yyy"),
+            title: "", timeStart: "", timeEnd: "", appointmentDetails: "" 
         });
     }
+    //changes the view of the modal
+    handleClickApp = e => {
+        /// call the db and pass the info for the id then update the state
+        e.stopPropagation();
+        console.log(e)
+        let id=1
+        this.setState({ modal: !this.state.modal, selectedId: id, title: "xxxx", timeStart: "08:00", timeEnd: "09:00", appointmentDetails: "testing" });
+    }
 
-    //
-    // the SAVE (sustituion of do something button) from the modal click need to call the db and save the info
-
-    //
-    ////
-
-    // handleInput
+    // handleChange - runs on every keystroke in the form to update the React state, the displayed value will update as the user types
     handleChange = event => {
         console.log(event.target)
         let name = event.target.name
@@ -42,20 +77,48 @@ class Calendar extends React.Component {
         this.setState({
             [name]: value
         })
-
     }
+
+    // the SAVE (substitution of do something button) from the modal click need to call the db and save the info
     // handleSubmit
     handleSave = event => {
         event.preventDefault()
+        console.log("handlesave")
         console.log(this.state)
+        let dayTemp = format(this.state.selectedDate, 'yyyyMMdd')
+        let newAppointment = {
+            day: dayTemp,
+            title: this.state.title,
+            timeStart: this.state.timeStart,
+            timeEnd: this.state.timeEnd,
+            appointmentDetails: this.state.appointmentDetails
+        }
+        // API call to create db pass the object newAppointment then when back you update state
+        // update db
+        // db.create(newEvent).then(res => this.setState.events(res))
+        // on response, update state
 
+        console.log("selected day:", dayTemp)
+        this.setState({
+            temp: {
+                ...this.state.temp, 
+                [dayTemp]: [
+                    {
+                        title: this.state.title,
+                        timeStart: this.state.timeStart,
+                        timeEnd: this.state.timeEnd,
+                        appointmentDetails: this.state.appointmentDetails
+                    }
+                ]
+            }
+        })
         // call update db and when back update state cleaning the info
-        this.setState({ modal: !this.state.modal, title: "", timeStart: "", timeEnd: "", appointmentDetails: "" })
+        this.setState({ modal: !this.state.modal, title: "", timeStart: "", timeEnd: "", appointmentDetails: "" });
     }
 
+    //this is rendering the month header with the arrows to change month
     renderHeader() {
         const dateFormat = "MMMM yyyy";
-
         return (
             <div className="header row flex-middle">
                 <div className="col col-start">
@@ -72,12 +135,12 @@ class Calendar extends React.Component {
             </div>
         );
     }
+
+    //this is rendering the MON-SUN 
     renderDays() {
         const dateFormat = "iiii";
         const days = [];
-
         let startDate = dateFns.startOfWeek(this.state.currentMonth);
-
         for (let i = 0; i < 7; i++) {
             days.push(
                 <div className="col col-center" key={i}>
@@ -85,7 +148,6 @@ class Calendar extends React.Component {
                 </div>
             );
         }
-
         return <div className="days row">{days}</div>;
     };
 
@@ -120,6 +182,19 @@ class Calendar extends React.Component {
                     >
                         <span className="number">{formattedDate}</span>
                         <span className="bg">{formattedDate}</span>
+
+
+                        {this.state.temp[format(day, 'yyyyMMdd')] &&
+                            //  console.log(format(day, 'yyyyMMdd'))
+                            this.state.temp[format(day, 'yyyyMMdd')].map(appt =>
+                                <SavedEvent
+                                    title={appt.title}
+                                    id={"1"}
+                                    handleClickApp={this.handleClickApp}
+                                />
+                            )
+                        }
+
                     </div>
                 );
                 day = dateFns.addDays(day, 1);
@@ -134,30 +209,25 @@ class Calendar extends React.Component {
         return <div className="body">{rows}</div>;
     }
 
+    //pops the modal up when a day is clicked
     onDateClick = day => {
         console.log("clicked", day);
-        this.toggle(day)
-        // setModal(ModalDay)
-        // open the modal
-        // this.setState({
-        //     selectedDate: day
-        // });
+        this.toggle(day);
     };
 
-
+    //when forward arrow is clicked, next month is shown
     nextMonth = () => {
         this.setState({
             currentMonth: dateFns.addMonths(this.state.currentMonth, 1)
         });
     };
 
+    //when back arrow is clicked, next month is shown
     prevMonth = () => {
         this.setState({
             currentMonth: dateFns.subMonths(this.state.currentMonth, 1)
         });
     };
-
-
 
     render() {
         return (
@@ -178,7 +248,6 @@ class Calendar extends React.Component {
                                 end={this.state.timeEnd}
                                 detail={this.state.appointmentDetails}
                                 handleChange={this.handleChange}
-
                             />
                         </ModalBody>
                         <ModalFooter>
@@ -187,8 +256,8 @@ class Calendar extends React.Component {
                         </ModalFooter>
                     </Modal>
                 </div>
-            </div>
 
+            </div>
         );
     }
 }
