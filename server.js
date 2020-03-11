@@ -39,7 +39,7 @@ app.use("/api/users", users);
 app.use("/", html);
 
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3001;
 
 
 mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/Pets")
