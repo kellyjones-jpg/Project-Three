@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import * as dateFns from 'date-fns';
 import format from 'date-fns/format';
@@ -56,7 +57,7 @@ class Calendar extends React.Component {
             modal: !this.state.modal,
             selectedDate: day,
             dayModal: format(day, "MMMM do, yyy"),
-            title: "", timeStart: "", timeEnd: "", appointmentDetails: "" 
+            title: "", timeStart: "", timeEnd: "", appointmentDetails: ""
         });
     }
     //changes the view of the modal
@@ -64,7 +65,10 @@ class Calendar extends React.Component {
         /// call the db and pass the info for the id then update the state
         e.stopPropagation();
         console.log(e)
-        let id=1
+        let id = 1
+        axios.get('/:id', {
+
+        })
         this.setState({ modal: !this.state.modal, selectedId: id, title: "xxxx", timeStart: "08:00", timeEnd: "09:00", appointmentDetails: "testing" });
     }
 
@@ -94,6 +98,15 @@ class Calendar extends React.Component {
             appointmentDetails: this.state.appointmentDetails
         }
         // API call to create db pass the object newAppointment then when back you update state
+        axios.post('/api/db', newAppointment)
+            .then(function (response) {
+                console.log(response);
+                // Update local state with new object
+                // OR just pull the whole db down
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
         // update db
         // db.create(newEvent).then(res => this.setState.events(res))
         // on response, update state
@@ -101,7 +114,7 @@ class Calendar extends React.Component {
         console.log("selected day:", dayTemp)
         this.setState({
             temp: {
-                ...this.state.temp, 
+                ...this.state.temp,
                 [dayTemp]: [
                     {
                         title: this.state.title,
