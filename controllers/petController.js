@@ -8,7 +8,7 @@ create: function(req, res) {
     var newEvent = new db(req.body);
     newEvent.save(function (err) {
         if(err)
-        return next(err);
+        return (err);
         res.json({
             message: 'Event Created'
         });
