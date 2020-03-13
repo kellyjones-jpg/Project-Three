@@ -54,7 +54,7 @@ class Login extends React.Component {
     </Form>
     <FormGroup row>
               <Col sm="12" md={{ size: 6, offset: 3 }}>
-                <div style={{textAlign: "center", paddingTop: ".50%"}}><h4>OR</h4></div>
+                <div style={{textAlign: "center", paddingTop: "1%"}}><h4>OR</h4></div>
                 </Col>
                 </FormGroup>
     <FormGroup row>

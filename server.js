@@ -18,6 +18,12 @@ app.use(
 );
 app.use(bodyParser.json());
 
+// Serve up static assets (usually on heroku)
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("client/build"));
+}
+
+
 // DB Config
 const db = require("./config/keys").mongoURI;
 
@@ -37,9 +43,15 @@ app.use(passport.initialize());
 require("./config/passport")(passport);
 
 // Routes
+// Send every request to the React app
+// Define any API routes before this runs
+app.get("*", function(req, res) {
+  res.sendFile(path.join(__dirname, "./client/build/index.html"));
+});
+
 app.use("/api/users", users);
 app.use("/api/db", dbRoutes);
-app.use("/", html);
+// app.use("/", html);
 
 
 const port = process.env.PORT || 3001;
