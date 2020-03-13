@@ -4,7 +4,7 @@ const petController = require('../../controllers/petController');
 
 
 router.route("/")
-    // .get(petController.find)
+    .get(petController.findAll)
     .post(petController.create);
 
 router.route("/:id")
