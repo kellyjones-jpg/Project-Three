@@ -30,7 +30,34 @@ class Login extends React.Component {
         return (
             <div className="login">
               <container>
-              <FormGroup row>
+    <FormGroup row>
+    <Col sm="12" md={{ size: 6, offset: 3 }}>
+                <div style={{paddingTop: "5%"}}>Login</div>
+                </Col>
+                </FormGroup>
+                <Form action="/api/users/login" method="post">
+      <FormGroup row style={{paddingTop: ".50%"}}>
+        <Col sm="12" md={{ size: 6, offset: 3 }}>
+          <Input type="email" name="email" id="email" placeholder="Email" />
+        </Col>
+      </FormGroup>
+      <FormGroup row>
+        <Col sm="12" md={{ size: 6, offset: 3 }}>
+          <Input type="password" name="password" id="password" placeholder="Password" />
+        </Col>
+      </FormGroup>
+      <FormGroup check row>
+        <Col sm="12" md={{ size: 6, offset: 3 }} style={{paddingTop: ".50%"}}>
+          <Button type="submit">Submit</Button>
+        </Col>
+      </FormGroup>
+    </Form>
+    <FormGroup row>
+              <Col sm="12" md={{ size: 6, offset: 3 }}>
+                <div style={{textAlign: "center", paddingTop: ".50%"}}><h4>OR</h4></div>
+                </Col>
+                </FormGroup>
+    <FormGroup row>
               <Col sm="12" md={{ size: 6, offset: 3 }}>
                 <div style={{paddingTop: "5%"}}>Register</div>
                 </Col>
@@ -53,29 +80,7 @@ class Login extends React.Component {
       </FormGroup>
       <FormGroup row>
         <Col sm="12" md={{ size: 6, offset: 3 }}>
-          <Input type="password2" name="password2" id="password2" placeholder="Re-enter Password" />
-        </Col>
-      </FormGroup>
-      <FormGroup check row>
-        <Col sm="12" md={{ size: 6, offset: 3 }} style={{paddingTop: ".50%"}}>
-          <Button type="submit">Submit</Button>
-        </Col>
-      </FormGroup>
-    </Form>
-    <FormGroup row>
-    <Col sm="12" md={{ size: 6, offset: 3 }}>
-                <div style={{paddingTop: "5%"}}>Login</div>
-                </Col>
-                </FormGroup>
-                <Form action="/api/users/login" method="post">
-      <FormGroup row style={{paddingTop: ".50%"}}>
-        <Col sm="12" md={{ size: 6, offset: 3 }}>
-          <Input type="email" name="email" id="email" placeholder="Email" />
-        </Col>
-      </FormGroup>
-      <FormGroup row>
-        <Col sm="12" md={{ size: 6, offset: 3 }}>
-          <Input type="password" name="password" id="password" placeholder="Password" />
+          <Input type="password" name="password2" id="password2" placeholder="Re-enter Password" />
         </Col>
       </FormGroup>
       <FormGroup check row>
