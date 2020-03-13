@@ -6,19 +6,6 @@ import format from 'date-fns/format';
 import CalendarDetail from './Form.js';
 import SavedEvent from './Event.js'
 
-const fakeApp = {
-
-    20200305: [
-        {
-            title: "",
-            timeStart: "",
-            timeEnd: "",
-            appointmentDetails: ""
-        }
-    ]
-
-}
-
 class Calendar extends React.Component {
     state = {
         currentMonth: new Date(),
@@ -33,24 +20,20 @@ class Calendar extends React.Component {
         temp: {}
     };
 
-
     componentDidMount() {
-        this.renderAppointments()
+        this.renderAppointments();
     }
 
     renderAppointments() {
         axios.get('/api/db')
             .then(res => {
+                console.log(" ");
+                console.log("get /api/db");
                 console.log(res.data)
                 this.setState({ event: res.data })
-
-
             })
-
-
-        // call the db get all the appointmentes and when back update the state
+        // call the db get all the appointments and when back update the state
     }
-
 
     //changes the view of the modal
     toggle = day => {
@@ -62,23 +45,31 @@ class Calendar extends React.Component {
         });
     }
     //changes the view of the modal
-    handleClickApp = e => {
+    handleClickApp = (e, id) => {
         /// call the db and pass the info for the id then update the state
         e.stopPropagation();
-        console.log(e)
-        let id = 1
-        axios.get('/:id', {
+        console.log(" ");
+        console.log(" ");
+        console.log("Loading event with id: " + id);
+        console.log(" ");
+        console.log(" ");
 
-        })
-        this.setState({ modal: !this.state.modal, selectedId: id, title: "xxxx", timeStart: "08:00", timeEnd: "09:00", appointmentDetails: "testing" });
+        axios.get('/api/db/' + id)
+            .then(res => {
+                console.log("Got something back: ");
+                console.log(JSON.stringify(res));
+                let event = res.data[0];
+                this.setState({ modal: !this.state.modal, selectedId: id, ...event });
+            });
+        // this.setState({ modal: !this.state.modal, selectedId: id, title: "Example", timeStart: "1:00", timeEnd: "2:00", appointmentDetails: "hey there" });
     }
 
     // handleChange - runs on every keystroke in the form to update the React state, the displayed value will update as the user types
     handleChange = event => {
-        console.log(event.target)
+        // console.log(event.target)
         let name = event.target.name
         let value = event.target.value
-        console.log(name, value)
+        // console.log(name, value)
         this.setState({
             [name]: value
         })
@@ -101,10 +92,10 @@ class Calendar extends React.Component {
             .then((response) => {
                 axios.get('/api/db')
                     .then(res => {
+                        console.log(" ");
+                        console.log("in axios post...calling get /api/db");
                         console.log(res.data)
                         this.setState({ event: res.data })
-
-
                     })
                 console.log(response);
                 // Update local state with new object
@@ -133,6 +124,21 @@ class Calendar extends React.Component {
         })
         // call update db and when back update state cleaning the info
         this.setState({ modal: !this.state.modal, title: "", timeStart: "", timeEnd: "", appointmentDetails: "" });
+    }
+
+    handleDelete = event => {
+        event.preventDefault();
+        console.log("handleDelete Clicked");
+        let id = this.state.selectedId;
+        console.log("handleDelete id: " + id);
+        axios.delete('/api/db/' + id)
+            .then(res => {
+                this.renderAppointments();
+                this.toggle(this.state.selectedDate);
+            })
+            .catch((error) => {
+                throw error.res.data
+            })
     }
 
     //this is rendering the month header with the arrows to change month
@@ -204,18 +210,14 @@ class Calendar extends React.Component {
                         <span className="number">{formattedDate}</span>
                         <span className="bg">{formattedDate}</span>
 
-                        {/* // rendering a single day
-// iterate through this.state.event 
-//if this.state.event.day = the day we are rendering then print out saved event */}
-                        {this.state.event &&
+                        {Array.isArray(this.state.event) &&
                             //  console.log(format(day, 'yyyyMMdd'))
-
                             this.state.event.map(appt => {
-                                return appt.day == format(day, "yyyyMMdd") &&
+                                return appt.day === format(day, "yyyyMMdd") &&
                                     <SavedEvent
                                         title={appt.title}
                                         id={appt._id}
-                                        handleClickApp={this.handleClickApp}
+                                        handleClickApp={(e) => { this.handleClickApp(e, appt._id) }}
                                     />
                             }
                             )
@@ -263,7 +265,6 @@ class Calendar extends React.Component {
                     {this.renderDays()}
                     {this.renderCells()}
                 </div>
-
                 <div>
                     <Modal isOpen={this.state.modal} toggle={() => { this.toggle(this.state.selectedDate) }} className={this.props.className}>
                         <ModalHeader toggle={() => { this.toggle(this.state.selectedDate) }}>{this.state.dayModal}</ModalHeader>
@@ -278,11 +279,10 @@ class Calendar extends React.Component {
                         </ModalBody>
                         <ModalFooter>
                             <Button color="primary" onClick={this.handleSave}>Save</Button>{' '}
-                            <Button color="secondary" onClick={() => { this.toggle(this.state.selectedDate) }}>Delete</Button>
+                            <Button color="secondary" onClick={this.handleDelete}>Delete</Button>
                         </ModalFooter>
                     </Modal>
                 </div>
-
             </div>
         );
     }

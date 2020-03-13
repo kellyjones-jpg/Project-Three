@@ -2,7 +2,6 @@ import React from 'react';
 import { Form, FormGroup, Label, Input } from 'reactstrap';
 
 const CalendarDetail = (props) => {
-    console.log(props)
     return (
         <Form>
 
