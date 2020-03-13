@@ -10,16 +10,10 @@ const fakeApp = {
 
     20200305: [
         {
-            title: "Grooming",
-            timeStart: "1300",
-            timeEnd: "2:00pm",
-            appointmentDetails: "In Aurora"
-        },
-        {
-            title: "Vet",
-            timeStart: "3:00pm",
-            timeEnd: "4:00pm",
-            appointmentDetails: "In Aurora"
+            title: "",
+            timeStart: "",
+            timeEnd: "",
+            appointmentDetails: ""
         }
     ]
 
@@ -44,13 +38,20 @@ class Calendar extends React.Component {
         this.renderAppointments()
     }
 
-    renderAppointments = () => {
+    renderAppointments() {
+        axios.get('/api/db')
+            .then(res => {
+                console.log(res.data)
+                this.setState({ event: res.data })
+
+
+            })
+
 
         // call the db get all the appointmentes and when back update the state
-
-        this.setState({ temp: fakeApp })
-
     }
+
+
     //changes the view of the modal
     toggle = day => {
         this.setState({
@@ -87,8 +88,6 @@ class Calendar extends React.Component {
     // handleSubmit
     handleSave = event => {
         event.preventDefault()
-        console.log("handlesave")
-        console.log(this.state)
         let dayTemp = format(this.state.selectedDate, 'yyyyMMdd')
         let newAppointment = {
             day: dayTemp,
@@ -99,7 +98,14 @@ class Calendar extends React.Component {
         }
         // API call to create db pass the object newAppointment then when back you update state
         axios.post('/api/db', newAppointment)
-            .then(function (response) {
+            .then((response) => {
+                axios.get('/api/db')
+                    .then(res => {
+                        console.log(res.data)
+                        this.setState({ event: res.data })
+
+
+                    })
                 console.log(response);
                 // Update local state with new object
                 // OR just pull the whole db down
@@ -182,7 +188,9 @@ class Calendar extends React.Component {
             for (let i = 0; i < 7; i++) {
                 formattedDate = dateFns.format(day, dateFormat);
                 const cloneDay = day;
-
+                // console.log(formattedDate)
+                // console.log(day)
+                // console.log(startDate)
                 days.push(
                     <div className={`col cell ${
                         !dateFns.isSameMonth(day, monthStart)
@@ -196,15 +204,20 @@ class Calendar extends React.Component {
                         <span className="number">{formattedDate}</span>
                         <span className="bg">{formattedDate}</span>
 
-
-                        {this.state.temp[format(day, 'yyyyMMdd')] &&
+                        {/* // rendering a single day
+// iterate through this.state.event 
+//if this.state.event.day = the day we are rendering then print out saved event */}
+                        {this.state.event &&
                             //  console.log(format(day, 'yyyyMMdd'))
-                            this.state.temp[format(day, 'yyyyMMdd')].map(appt =>
-                                <SavedEvent
-                                    title={appt.title}
-                                    id={"1"}
-                                    handleClickApp={this.handleClickApp}
-                                />
+
+                            this.state.event.map(appt => {
+                                return appt.day == format(day, "yyyyMMdd") &&
+                                    <SavedEvent
+                                        title={appt.title}
+                                        id={appt._id}
+                                        handleClickApp={this.handleClickApp}
+                                    />
+                            }
                             )
                         }
 
