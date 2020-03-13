@@ -5,13 +5,11 @@ const SavedEvent = (props) => {
   return (
     <div >
       <Button onClick={
-       
         props.handleClickApp
       }
-      idApp={"hihi"}
-         color="primary" outline>
-          {props.title}
-          <Badge color="secondary"></Badge>
+        color="primary" outline>
+        {props.title}
+        <Badge color="secondary"></Badge>
       </Button>
     </div>
   );

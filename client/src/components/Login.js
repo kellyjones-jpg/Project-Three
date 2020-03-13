@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Form, FormGroup, Label, Input, Col } from 'reactstrap';
+import { Button, Form, FormGroup, Input, Col } from 'reactstrap';
 import axios from 'axios';
 
 class Login extends React.Component {
